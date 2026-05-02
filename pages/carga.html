@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carga - Alboroto</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Ruta ajustada -->
+  <link rel="stylesheet" href="../Assets/css/style.css">
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="text-center">
+        <!-- Ruta ajustada para el logo -->
+        <img src="../Assets/img/logo.jpg" alt="Logo Alboroto Multiespacio" class="sidebar-logo">
+      </div>
+      
+      <ul class="nav flex-column nav-pills">
+        <li class="nav-item">
+          <!-- Ruta ajustada al index -->
+          <a class="nav-link" href="../index.html">⚙️ Gestión</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="carga.html">📝 Cargar Fiesta</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="calendario.html">📅 Calendario</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+      <div style="max-width: 800px; margin: auto;">
+        <h2 class="mb-4">Ficha del Evento</h2>
+
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <form id="formCarga">
+              
+              <!-- Fechas y Horarios -->
+              <h5 class="text-primary mt-3" style="color: var(--alboroto-naranja) !important;">📅 Cuándo</h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-muted small mb-1">Fecha del Evento</label>
+                  <input type="date" class="form-control" id="fecha" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small mb-1">Tipo (Ej: Cumple)</label>
+                  <input type="text" class="form-control" id="tipo" value="Cumple" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small mb-1">Desde las</label>
+                  <input type="time" class="form-control" id="horaDesde" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small mb-1">Hasta las</label>
+                  <input type="time" class="form-control" id="horaHasta" required>
+                </div>
+              </div>
+
+              <!-- Detalles del Homenajeado -->
+              <h5 class="text-primary mt-4" style="color: var(--alboroto-naranja) !important;">👧👦 Quién</h5>
+              <div class="row g-3">
+                <div class="col-md-12">
+                  <label class="form-label text-muted small mb-1">Nombre y Apellido</label>
+                  <input type="text" class="form-control" id="nombreApellido" placeholder="Ej: Francesca y Juana" required>
+                </div>
+                <div class="col-md-5">
+                  <label class="form-label text-muted small mb-1">Colegio</label>
+                  <input type="text" class="form-control" id="colegio">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label text-muted small mb-1">Edad</label>
+                  <input type="number" class="form-control" id="edad">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label text-muted small mb-1">Temática</label>
+                  <input type="text" class="form-control" id="tematica" placeholder="Ej: K-pop">
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label text-muted small mb-1">Teléfono (WhatsApp)</label>
+                  <input type="tel" class="form-control" id="telefono" placeholder="Ej: 5492231234567" required>
+                </div>
+              </div>
+
+              <!-- Invitados y Staff -->
+              <h5 class="text-primary mt-4" style="color: var(--alboroto-naranja) !important;">👥 Personas y Staff</h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-muted small mb-1">Cant. Adultos</label>
+                  <input type="number" class="form-control" id="adultos" value="0">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small mb-1">Cant. Niños</label>
+                  <input type="number" class="form-control" id="ninos" value="0">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small mb-1">Profe</label>
+                  <input type="text" class="form-control" id="profe">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small mb-1">Ayudante</label>
+                  <input type="text" class="form-control" id="ayudante">
+                </div>
+              </div>
+
+              <!-- Indicaciones y Cobro -->
+              <h5 class="text-primary mt-4" style="color: var(--alboroto-naranja) !important;">📝 Notas y Cobro</h5>
+              <div class="row g-3">
+                <div class="col-md-12">
+                  <label class="form-label text-muted small mb-1">Indicaciones</label>
+                  <textarea class="form-control" id="indicaciones" rows="3"></textarea>
+                </div>
+                <div class="col-md-6 offset-md-6 mt-4">
+                  <label class="form-label fw-bold">TOTAL: $</label>
+                  <input type="number" class="form-control form-control-lg border-primary" id="total" placeholder="0.00">
+                </div>
+              </div>
+
+              <hr class="my-4">
+              <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Guardar Fiesta</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="../Assets/js/main.js"></script>
+</body>
+</html>

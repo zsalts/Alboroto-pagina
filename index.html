@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión - Alboroto</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="Assets/css/style.css">
+</head>
+<body>
+
+  <!-- CONTENEDOR PRINCIPAL DASHBOARD -->
+  <div class="dashboard-wrapper">
+
+    <!-- SIDEBAR (Menú Lateral) -->
+    <nav class="sidebar">
+      <div class="text-center">
+        <!-- Logo desde la carpeta principal -->
+        <img src="Assets/img/logo.jpg" alt="Logo Alboroto Multiespacio" class="sidebar-logo">
+      </div>
+      
+      <ul class="nav flex-column nav-pills">
+        <li class="nav-item">
+          <a class="nav-link active" href="index.html">⚙️ Gestión</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/carga.html">📝 Cargar Fiesta</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="pages/calendario.html">📅 Calendario</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+      <div class="max-w-md">
+        <h2 class="mb-4">Próximos Eventos</h2>
+        
+        <div class="card shadow-sm">
+          <div class="card-body p-0">
+            <div class="list-group list-group-flush" style="border-radius: 20px;">
+              
+              <!-- FIESTA 1 -->
+              <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2 p-4">
+                <div>
+                  <h5 class="mb-1">Francesca y Juana (Cumple)</h5>
+                  <span class="text-muted small">📅 15/05/2026 | 🕒 16:30 a 19:30 hs</span>
+                </div>
+                <div class="d-flex gap-2">
+                  <button onclick="abrirModalEdicion('Francesca y Juana', '2026-05-15', '16:30', '19:30', 'Esquiú', 6, 'K-pop', '5492231234567', 4, 28, 'Ivi', '', '', 0)" class="btn btn-outline-primary btn-sm">
+                    ✏️ Editar
+                  </button>
+                  <button onclick="mandarWhatsApp('5492231234567', 'Francesca y Juana', '15/05/2026', '16:30 a 19:30')" class="btn btn-success btn-sm text-white">
+                    📲 Check-in
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL DE EDICIÓN (Ventana Emergente) -->
+  <!-- ========================================== -->
+  <div class="modal fade" id="modalEdicion" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header text-white" style="background-color: var(--alboroto-verde-fondo) !important;">
+          <h5 class="modal-title mb-0">✏️ Editar Fiesta</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formEditar">
+            <div class="row g-2">
+              <div class="col-md-12">
+                <label class="form-label small mb-0">Nombre y Apellido</label>
+                <input type="text" class="form-control form-control-sm" id="editNombre" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small mb-0">Fecha</label>
+                <input type="date" class="form-control form-control-sm" id="editFecha" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small mb-0">Desde</label>
+                <input type="time" class="form-control form-control-sm" id="editDesde" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small mb-0">Hasta</label>
+                <input type="time" class="form-control form-control-sm" id="editHasta" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small mb-0">Colegio</label>
+                <input type="text" class="form-control form-control-sm" id="editColegio">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label small mb-0">Edad</label>
+                <input type="number" class="form-control form-control-sm" id="editEdad">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label small mb-0">Temática</label>
+                <input type="text" class="form-control form-control-sm" id="editTematica">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small mb-0">Adultos</label>
+                <input type="number" class="form-control form-control-sm" id="editAdultos">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small mb-0">Niños</label>
+                <input type="number" class="form-control form-control-sm" id="editNinos">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small mb-0">Profe</label>
+                <input type="text" class="form-control form-control-sm" id="editProfe">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label small mb-0">Ayudante</label>
+                <input type="text" class="form-control form-control-sm" id="editAyudante">
+              </div>
+              <div class="col-md-12">
+                <label class="form-label small mb-0">Teléfono (WhatsApp)</label>
+                <input type="tel" class="form-control form-control-sm" id="editTelefono">
+              </div>
+              <div class="col-md-12">
+                <label class="form-label small mb-0">Indicaciones</label>
+                <textarea class="form-control form-control-sm" id="editIndicaciones" rows="2"></textarea>
+              </div>
+              <div class="col-md-6 offset-md-6 mt-3">
+                <label class="form-label fw-bold">TOTAL: $</label>
+                <input type="number" class="form-control" id="editTotal">
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" onclick="guardarEdicion()">Guardar Cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="Assets/js/main.js"></script>
+</body>
+</html>

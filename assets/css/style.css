@@ -1,0 +1,164 @@
+/* ========================================== */
+/* FUENTES: Fredoka (Títulos) y Nunito (Textos) */
+/* ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap');
+
+:root {
+  /* Paleta extraída del logo de Alboroto */
+  --alboroto-verde-fondo: #98a984;
+  --alboroto-naranja: #fc8b46;
+  --alboroto-celeste: #63bad2;
+  --alboroto-amarillo: #fcd34d;
+  --alboroto-oscuro: #2d312d;
+  --bg-claro: #f4f6f3;
+}
+
+body { 
+  background-color: var(--bg-claro); 
+  font-family: 'Nunito', sans-serif;
+  color: var(--alboroto-oscuro);
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6, .modal-title {
+  font-family: 'Fredoka', sans-serif;
+  color: var(--alboroto-oscuro);
+  letter-spacing: 0.5px;
+}
+
+/* ========================================== */
+/* ESTRUCTURA DASHBOARD (Sidebar + Contenido) */
+/* ========================================== */
+.dashboard-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: var(--alboroto-verde-fondo);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.sidebar-logo {
+  max-width: 100%;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* Contenedores */
+.max-w-md { max-width: 700px; margin: 0 auto; }
+.calendario-w { max-width: 900px; margin: 0 auto; }
+
+/* ========================================== */
+/* MENÚ LATERAL                               */
+/* ========================================== */
+.nav-pills .nav-link {
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.05rem;
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+}
+
+.nav-pills .nav-link.active {
+  background-color: white;
+  color: var(--alboroto-verde-fondo);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* ========================================== */
+/* COMPONENTES (Tarjetas, Botones, Inputs)    */
+/* ========================================== */
+.card {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.btn {
+  border-radius: 12px;
+  font-weight: 700;
+  padding: 10px 20px;
+  transition: all 0.2s;
+  font-family: 'Fredoka', sans-serif;
+}
+
+/* Usamos el naranja del logo como botón primario */
+.btn-primary {
+  background-color: var(--alboroto-naranja);
+  border-color: var(--alboroto-naranja);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #e57836;
+  border-color: #e57836;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(252, 139, 70, 0.4);
+}
+
+/* Usamos el celeste del logo para acciones secundarias / check-in */
+.btn-success {
+  background-color: var(--alboroto-celeste);
+  border-color: var(--alboroto-celeste);
+}
+
+.btn-success:hover {
+  background-color: #51a6be;
+  border-color: #51a6be;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(99, 186, 210, 0.4);
+}
+
+.btn-outline-primary {
+  color: var(--alboroto-naranja);
+  border-color: var(--alboroto-naranja);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--alboroto-naranja);
+  color: white;
+}
+
+.form-control, .form-select {
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  padding: 10px 15px;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--alboroto-naranja);
+  box-shadow: 0 0 0 3px rgba(252, 139, 70, 0.2);
+}
+
+/* ========================================== */
+/* RESPONSIVE (Celulares)                     */
+/* ========================================== */
+@media (max-width: 768px) {
+  .dashboard-wrapper { flex-direction: column; }
+  .sidebar { width: 100%; padding: 15px; }
+  .sidebar-logo { max-width: 150px; margin: 0 auto 15px auto; display: block; }
+  .sidebar .nav { flex-direction: row !important; overflow-x: auto; flex-wrap: nowrap; gap: 10px; }
+  .sidebar .nav-link { margin-bottom: 0; white-space: nowrap; padding: 10px 15px; }
+  .main-content { padding: 20px 10px; }
+}
