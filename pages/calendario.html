@@ -6,11 +6,13 @@
   <title>Calendario - Alboroto</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../Assets/css/style.css">
+  
+  <!-- FullCalendar Library -->
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 </head>
 <body>
 
   <div class="dashboard-wrapper">
-
     <!-- SIDEBAR -->
     <nav class="sidebar">
       <div class="text-center">
@@ -32,21 +34,74 @@
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
-      <div class="calendario-w">
-        <h2 class="mb-4">Disponibilidad</h2>
-        
-        <div class="card shadow-sm">
-          <div class="card-body p-1" style="border-radius: 20px; overflow: hidden;">
-            <iframe src="https://calendar.google.com/calendar/embed?src=es.ar%23holiday%40group.v.calendar.google.com&ctz=America%2FArgentina%2FBuenos_Aires" 
-                    style="border: 0" width="100%" height="600" frameborder="0" scrolling="no">
-            </iframe>
+      <div style="max-width: 1100px; margin: auto;">
+        <h2 class="mb-4">Calendario de Eventos</h2>
+
+        <div class="card shadow-sm border-0 rounded-4">
+          <div class="card-body p-4">
+            <div id="calendar"></div>
           </div>
         </div>
       </div>
     </main>
-
   </div>
 
+  <!-- MODAL DE DETALLES DEL EVENTO (Ventana prolija) -->
+  <div class="modal fade" id="modalDetalles" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-header text-white" style="background-color: #ff6b35;">
+          <h5 class="modal-title fw-bold">🎊 Detalles de la Fiesta</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        
+        <div class="modal-body p-4">
+          <h4 class="fw-bold text-center mb-1 text-dark" id="modalTituloFiesta"></h4>
+          <p class="text-center text-muted mb-4" id="modalTematica"></p>
+          
+          <div class="d-flex align-items-center mb-3">
+            <div class="fs-4 me-3">🕒</div>
+            <div>
+              <div class="text-muted small">Horario</div>
+              <div class="fw-bold fs-6" id="modalHorario"></div>
+            </div>
+          </div>
+          
+          <div class="d-flex align-items-center mb-3">
+            <div class="fs-4 me-3">🛡️</div>
+            <div>
+              <div class="text-muted small">Staff a cargo</div>
+              <div class="fw-bold fs-6" id="modalStaff"></div>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center mb-3">
+            <div class="fs-4 me-3">👥</div>
+            <div>
+              <div class="text-muted small">Invitados</div>
+              <div class="fw-bold fs-6" id="modalInvitados"></div>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center">
+            <div class="fs-4 me-3">📞</div>
+            <div>
+              <div class="text-muted small">Teléfono de contacto</div>
+              <div class="fw-bold fs-6" id="modalTelefono"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light border-0 rounded-bottom-4">
+          <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm" id="btnWppModal">📲 WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../Assets/js/main.js"></script>
 </body>
 </html>
