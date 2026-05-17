@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             eventContent: function(arg) {
                 const profes = arg.event.extendedProps.staff;
                 let htmlFormateado = `
-                    <div style="background-color: var(--alboroto-naranja, #ff6b35); border-radius: 4px; padding: 4px 6px; width: 100%; height: 100%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+                    <div style="background-color: var(--alboroto-naranja, #ff6b35); border-radius: 4px; padding: 4px 6px; width: 100%; height: 100%; box-shadow: 0 1px 3px rgba(0,0,0,0.2); cursor: pointer;">
                         <div style="font-size: 0.85em; font-weight: 700; margin-bottom: 2px; color: #fff;">🕒 ${arg.timeText} hs</div>
                         <div style="font-size: 0.9em; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; margin-bottom: 2px;">🎊 ${arg.event.title}</div>
                         <div style="font-size: 0.75em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; opacity: 0.9;">🛡️ ${profes}</div>
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const eventos = data.map(f => {
                             const partes = f.fecha.split('/');
                             const fechaIso = `${partes[2]}-${partes[1]}-${partes[0]}`; 
-                            let textoStaff = f.profe || 'Sin profe';
+                            let textoStaff = f.profe || 'Sin profe asignado';
                             if (f.ayudante) textoStaff += ` y ${f.ayudante}`;
 
                             return {
@@ -120,23 +120,34 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             
             eventClick: function(info) {
+                // Evitar comportamientos extraños al hacer clic
+                info.jsEvent.preventDefault();
+
                 const prop = info.event.extendedProps;
                 const horaInicio = info.event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                const horaFin = info.event.end ? info.event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+                const horaFin = info.event.end ? info.event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '??:??';
                 
+                // Llenamos el Modal
                 document.getElementById('modalTituloFiesta').textContent = info.event.title;
-                document.getElementById('modalTematica').textContent = prop.tematica ? `(Temática: ${prop.tematica})` : '';
+                document.getElementById('modalTematica').textContent = prop.tematica ? `Temática: ${prop.tematica}` : 'Sin temática especificada';
                 document.getElementById('modalHorario').textContent = `${horaInicio} a ${horaFin} hs`;
                 document.getElementById('modalStaff').textContent = prop.staff;
-                document.getElementById('modalInvitados').textContent = `${prop.adultos} Ad. / ${prop.ninos} Niñ.`;
-                document.getElementById('modalTelefono').textContent = prop.telefono;
+                document.getElementById('modalInvitados').textContent = `${prop.adultos || 0} Adultos / ${prop.ninos || 0} Niños`;
+                document.getElementById('modalTelefono').textContent = prop.telefono || 'Sin número registrado';
 
+                // Configuración del botón de WhatsApp
                 const btnWpp = document.getElementById('btnWppModal');
-                const fechaLimpia = info.event.start.toLocaleDateString('es-AR', {day: '2-digit', month: '2-digit', year: 'numeric'});
-                
-                btnWpp.onclick = () => mandarWhatsApp(prop.telefono, info.event.title, fechaLimpia, horaInicio);
+                if (prop.telefono) {
+                    btnWpp.style.display = 'inline-block';
+                    const fechaLimpia = info.event.start.toLocaleDateString('es-AR', {day: '2-digit', month: '2-digit', year: 'numeric'});
+                    btnWpp.onclick = () => mandarWhatsApp(prop.telefono, info.event.title, fechaLimpia, horaInicio);
+                } else {
+                    btnWpp.style.display = 'none';
+                }
 
-                const modal = new bootstrap.Modal(document.getElementById('modalDetalles'));
+                // Usamos getOrCreateInstance para no saturar la memoria creando modales infinitos
+                const modalElement = document.getElementById('modalDetalles');
+                const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
                 modal.show();
             }
         });
@@ -167,19 +178,18 @@ function cargarFiestasActivas() {
             }
 
             data.forEach(f => {
-                // Escapamos los datos para mandarlos seguros a las funciones de los botones
                 const fJson = JSON.stringify(f).replace(/"/g, '&quot;'); 
                 
                 const html = `
                     <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2 p-4 mb-3 border-0 shadow-sm rounded-4">
                         <div style="flex: 1; min-width: 250px;">
-                            <h5 class="fw-bold mb-1" style="color: #333;">${f.nombre} <span class="fw-normal text-muted">(${f.tematica})</span></h5>
+                            <h5 class="fw-bold mb-1" style="color: #333;">${f.nombre} <span class="fw-normal text-muted">(${f.tematica || 'Sin temática'})</span></h5>
                             <div class="text-muted small d-flex align-items-center gap-2">
                                 <span>📅 ${f.fecha}</span> | <span>🕒 ${f.desde} a ${f.hasta} hs</span>
                             </div>
                             <div class="mt-2">
-                                <span class="badge bg-light text-dark border fw-normal">👤 ${f.adultos} Ad. / ${f.ninos} Niñ.</span>
-                                <span class="badge bg-light text-dark border fw-normal">🛡️ ${f.profe}</span>
+                                <span class="badge bg-light text-dark border fw-normal">👤 ${f.adultos || 0} Ad. / ${f.ninos || 0} Niñ.</span>
+                                <span class="badge bg-light text-dark border fw-normal">🛡️ ${f.profe || 'Sin profe'}</span>
                             </div>
                         </div>
                         <div class="d-flex gap-2">
@@ -212,7 +222,7 @@ async function eliminarFiesta(json) {
 
     const datosEliminar = {
         accion: 'eliminar',
-        idOriginal: fiesta.id // Usamos el ID seguro que mandaste del backend
+        idOriginal: fiesta.id 
     };
 
     try {
@@ -224,7 +234,7 @@ async function eliminarFiesta(json) {
         });
 
         alert('🗑️ ¡Fiesta eliminada correctamente!');
-        cargarFiestasActivas(); // Refrescar lista visual
+        cargarFiestasActivas(); 
     } catch (error) {
         alert('Hubo un problema al intentar eliminar el evento.');
     }
@@ -233,9 +243,8 @@ async function eliminarFiesta(json) {
 // --- FUNCIONES DE EDICIÓN ---
 function abrirModalEdicion(json) {
     const fiesta = JSON.parse(json);
-    fiestaSeleccionada = fiesta; // Guardamos el estado en variable global
+    fiestaSeleccionada = fiesta; 
 
-    // Llenar el formulario con los datos
     document.getElementById('editNombre').value = fiesta.nombre || '';
     document.getElementById('editDesde').value = fiesta.desde || '';
     document.getElementById('editHasta').value = fiesta.hasta || '';
@@ -250,7 +259,6 @@ function abrirModalEdicion(json) {
     document.getElementById('editIndicaciones').value = fiesta.indicaciones || '';
     document.getElementById('editTotal').value = fiesta.total || '';
 
-    // Convertir la fecha de DD/MM/YYYY a YYYY-MM-DD para el input HTML
     if (fiesta.fecha && fiesta.fecha.includes('/')) {
         const partes = fiesta.fecha.split('/');
         document.getElementById('editFecha').value = `${partes[2]}-${partes[1]}-${partes[0]}`;
@@ -269,7 +277,6 @@ async function guardarEdicion() {
     btn.disabled = true;
     btn.innerHTML = '⌛ Actualizando...';
 
-    // Formatear la fecha de vuelta a DD/MM/YYYY
     const nuevaFechaInput = document.getElementById('editFecha').value;
     let nuevaFechaFormateada = nuevaFechaInput;
     if (nuevaFechaInput.includes('-')) {
@@ -279,7 +286,7 @@ async function guardarEdicion() {
 
     const datosModificados = {
         accion: 'editar',
-        idOriginal: fiestaSeleccionada.id, // Fundamental para buscar la fila correcta
+        idOriginal: fiestaSeleccionada.id, 
         nombre: document.getElementById('editNombre').value,
         fecha: nuevaFechaFormateada,
         desde: document.getElementById('editDesde').value,
@@ -306,7 +313,6 @@ async function guardarEdicion() {
 
         alert('✅ ¡Cambios guardados con éxito!');
         
-        // Cerrar modal y refrescar listado
         const modalElement = document.getElementById('modalEdicion');
         const modal = bootstrap.Modal.getInstance(modalElement);
         if (modal) modal.hide();
@@ -323,7 +329,9 @@ async function guardarEdicion() {
 
 // --- FUNCIÓN WHATSAPP ---
 function mandarWhatsApp(tel, nombre, fecha, hora) {
-    const numero = tel.replace(/\D/g, ''); 
+    if (!tel) return; // Evita errores si tocan el botón y no hay teléfono guardado
+    // Convertimos a texto por las dudas y limpiamos todo lo que no sea número
+    const numero = tel.toString().replace(/\D/g, ''); 
     const msj = encodeURIComponent(`¡Hola! Te escribimos de Alboroto Multiespacio para confirmar los detalles del cumple de ${nombre} el día ${fecha} a las ${hora} hs.`);
     window.open(`https://wa.me/${numero}?text=${msj}`, '_blank');
 }
