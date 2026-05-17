@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
             btn.innerHTML = '⌛ Guardando en Alboroto...';
 
-            // REEMPLAZO CLAVE: Capturamos los datos uno por uno por su ID para que no viajen vacíos
             const datos = {
                 fecha: document.getElementById('fecha').value,
                 desde: document.getElementById('horaDesde').value,
@@ -31,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                // Usamos text/plain y no-cors para que Google no rebote la conexión
                 await fetch(URL_GOOGLE_SCRIPT, {
                     method: 'POST',
                     mode: 'no-cors', 
@@ -51,76 +49,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. CONTROL DE LA LISTA DE GESTIÓN (gestion.html)
-    if (document.querySelector('.list-group')) {
+    // 2. CONTROL DE LA LISTA DE GESTIÓN (index.html)
+    // Nos aseguramos de no ejecutar esto en el calendario si por alguna razón hay un .list-group
+    if (document.querySelector('.list-group') && !document.getElementById('calendar')) {
         cargarFiestasActivas();
     }
-});
 
-function cargarFiestasActivas() {
-    const contenedor = document.querySelector('.list-group');
-    if (!contenedor) return;
-
-    contenedor.innerHTML = '<div class="text-center p-4">⏳ Buscando próximos eventos...</div>';
-
-    fetch(URL_GOOGLE_SCRIPT)
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) throw new Error(data.error);
-            
-            contenedor.innerHTML = '';
-            if (data.length === 0) {
-                contenedor.innerHTML = '<div class="text-center p-4 text-muted">No hay eventos activos programados.</div>';
-                return;
-            }
-
-            data.forEach(f => {
-                const fJson = JSON.stringify(f).replace(/"/g, '&quot;'); // Prepara datos para el botón Editar
-                
-                const html = `
-                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2 p-4 mb-3 border-0 shadow-sm rounded-4">
-                        <div style="flex: 1; min-width: 250px;">
-                            <h5 class="fw-bold mb-1" style="color: #333;">${f.nombre} <span class="fw-normal text-muted">(${f.tematica})</span></h5>
-                            <div class="text-muted small d-flex align-items-center gap-2">
-                                <span>📅 ${f.fecha}</span> | <span>🕒 ${f.desde} a ${f.hasta} hs</span>
-                            </div>
-                            <div class="mt-2">
-                                <span class="badge bg-light text-dark border fw-normal">👤 ${f.adultos} Ad. / ${f.ninos} Niñ.</span>
-                                <span class="badge bg-light text-dark border fw-normal">🛡️ ${f.profe}</span>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-outline-primary rounded-pill px-3 shadow-sm" onclick="abrirModalEdicion('${fJson}')">
-                                ✏️ Editar
-                            </button>
-                            <button class="btn btn-success rounded-pill px-3 text-white shadow-sm" onclick="mandarWhatsApp('${f.telefono}', '${f.nombre}', '${f.fecha}', '${f.desde}')">
-                                📲 Check-in
-                            </button>
-                        </div>
-                    </div>
-                `;
-                contenedor.innerHTML += html;
-            });
-        })
-        .catch(err => {
-            contenedor.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
-        });
-}
-
-// --- FUNCIONES EXTRA ---
-function mandarWhatsApp(tel, nombre, fecha, hora) {
-    const numero = tel.replace(/\D/g, ''); 
-    const msj = encodeURIComponent(`¡Hola! Te escribimos de Alboroto Multiespacio para confirmar los detalles del cumple de ${nombre} el día ${fecha} a las ${hora} hs.`);
-    window.open(`https://wa.me/${numero}?text=${msj}`, '_blank');
-}
-
-function abrirModalEdicion(json) {
-    const fiesta = JSON.parse(json);
-    console.log("Datos para editar:", fiesta);
-    alert("Acá se abriría el modal para editar a " + fiesta.nombre);
-}
-
-// --- 3. LÓGICA DEL CALENDARIO HTML (calendario.html) ---
+    // 3. LÓGICA DEL CALENDARIO HTML (calendario.html)
     const calendarEl = document.getElementById('calendar');
     if (calendarEl) {
         const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -137,16 +72,12 @@ function abrirModalEdicion(json) {
                 week: 'Semana',
                 day: 'Día'
             },
-            
-            // Ajustes visuales de tiempo
             displayEventEnd: true, 
             eventTimeFormat: { 
                 hour: '2-digit',
                 minute: '2-digit',
                 meridiem: false
             },
-            
-            // Diseño personalizado de la tarjeta en el calendario
             eventContent: function(arg) {
                 const profes = arg.event.extendedProps.staff;
                 
@@ -165,8 +96,6 @@ function abrirModalEdicion(json) {
                 `;
                 return { html: htmlFormateado };
             },
-
-            // Carga de eventos desde Google Sheets
             events: function(info, successCallback, failureCallback) {
                 fetch(URL_GOOGLE_SCRIPT + "?nocache=" + new Date().getTime())
                     .then(res => res.json())
@@ -202,16 +131,12 @@ function abrirModalEdicion(json) {
                         failureCallback(err);
                     });
             },
-            
-            // Acción al hacer clic en un evento
-           // Acción al hacer clic en un evento
             eventClick: function(info) {
                 const titulo = info.event.title;
                 const horaInicio = info.event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 const horaFin = info.event.end ? info.event.end.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
                 const prop = info.event.extendedProps;
                 
-                // 1. Inyectamos los datos en el HTML del modal que armamos recién
                 document.getElementById('modalTituloFiesta').textContent = titulo;
                 document.getElementById('modalTematica').textContent = prop.tematica ? `(Temática: ${prop.tematica})` : '';
                 document.getElementById('modalHorario').textContent = `${horaInicio} a ${horaFin} hs`;
@@ -219,14 +144,11 @@ function abrirModalEdicion(json) {
                 document.getElementById('modalInvitados').textContent = `${prop.adultos} Ad. / ${prop.ninos} Niñ.`;
                 document.getElementById('modalTelefono').textContent = prop.telefono;
 
-                // 2. Le damos vida al botón de WhatsApp del modal
                 const btnWpp = document.getElementById('btnWppModal');
                 const fechaLimpia = info.event.start.toLocaleDateString('es-AR', {day: '2-digit', month: '2-digit', year: 'numeric'});
                 
-                // Usamos la misma función de WhatsApp que ya tenías armada abajo
                 btnWpp.onclick = () => mandarWhatsApp(prop.telefono, titulo, fechaLimpia, horaInicio);
 
-                // 3. Mostramos el modal elegante en pantalla
                 const modalElement = document.getElementById('modalDetalles');
                 const modal = new bootstrap.Modal(modalElement);
                 modal.show();
@@ -235,3 +157,69 @@ function abrirModalEdicion(json) {
 
         calendar.render();
     }
+}); // Cierre del DOMContentLoaded
+
+// --- FUNCIONES EXTRA GLOBALES ---
+// Las dejamos fuera del DOMContentLoaded para que los botones onclick="" del HTML las puedan encontrar
+
+function cargarFiestasActivas() {
+    const contenedor = document.querySelector('.list-group');
+    if (!contenedor) return;
+
+    contenedor.innerHTML = '<div class="text-center p-4">⏳ Buscando próximos eventos...</div>';
+
+    fetch(URL_GOOGLE_SCRIPT)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) throw new Error(data.error);
+            
+            contenedor.innerHTML = '';
+            if (data.length === 0) {
+                contenedor.innerHTML = '<div class="text-center p-4 text-muted">No hay eventos activos programados.</div>';
+                return;
+            }
+
+            data.forEach(f => {
+                const fJson = JSON.stringify(f).replace(/"/g, '&quot;'); 
+                
+                const html = `
+                    <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2 p-4 mb-3 border-0 shadow-sm rounded-4">
+                        <div style="flex: 1; min-width: 250px;">
+                            <h5 class="fw-bold mb-1" style="color: #333;">${f.nombre} <span class="fw-normal text-muted">(${f.tematica})</span></h5>
+                            <div class="text-muted small d-flex align-items-center gap-2">
+                                <span>📅 ${f.fecha}</span> | <span>🕒 ${f.desde} a ${f.hasta} hs</span>
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge bg-light text-dark border fw-normal">👤 ${f.adultos} Ad. / ${f.ninos} Niñ.</span>
+                                <span class="badge bg-light text-dark border fw-normal">🛡️ ${f.profe}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary rounded-pill px-3 shadow-sm" onclick="abrirModalEdicion('${fJson}')">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn btn-success rounded-pill px-3 text-white shadow-sm" onclick="mandarWhatsApp('${f.telefono}', '${f.nombre}', '${f.fecha}', '${f.desde}')">
+                                📲 Check-in
+                            </button>
+                        </div>
+                    </div>
+                `;
+                contenedor.innerHTML += html;
+            });
+        })
+        .catch(err => {
+            contenedor.innerHTML = `<div class="alert alert-danger">Error al cargar datos desde Google Script. Revisá que la URL sea correcta.</div>`;
+        });
+}
+
+function mandarWhatsApp(tel, nombre, fecha, hora) {
+    const numero = tel.replace(/\D/g, ''); 
+    const msj = encodeURIComponent(`¡Hola! Te escribimos de Alboroto Multiespacio para confirmar los detalles del cumple de ${nombre} el día ${fecha} a las ${hora} hs.`);
+    window.open(`https://wa.me/${numero}?text=${msj}`, '_blank');
+}
+
+function abrirModalEdicion(json) {
+    const fiesta = JSON.parse(json);
+    console.log("Datos para editar:", fiesta);
+    alert("Acá se abriría el modal para editar a " + fiesta.nombre);
+}

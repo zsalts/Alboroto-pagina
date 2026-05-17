@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
 
   <!-- CONTENEDOR PRINCIPAL DASHBOARD -->
@@ -18,7 +20,7 @@
         <!-- Logo desde la carpeta principal -->
         <img src="assets/img/logo.jpg" alt="Logo Alboroto Multiespacio" class="sidebar-logo">
       </div>
-      
+
       <ul class="nav flex-column nav-pills">
         <li class="nav-item">
           <a class="nav-link active" href="index.html">⚙️ Gestión</a>
@@ -36,11 +38,11 @@
     <main class="main-content">
       <div class="max-w-md">
         <h2 class="mb-4">Próximos Eventos</h2>
-        
+
         <div class="card shadow-sm">
           <div class="card-body p-0">
             <div class="list-group list-group-flush" style="border-radius: 20px;">
-              
+
               <!-- FIESTA 1 -->
               <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2 p-4">
                 <div>
@@ -48,10 +50,13 @@
                   <span class="text-muted small">📅 15/05/2026 | 🕒 16:30 a 19:30 hs</span>
                 </div>
                 <div class="d-flex gap-2">
-                  <button onclick="abrirModalEdicion('Francesca y Juana', '2026-05-15', '16:30', '19:30', 'Esquiú', 6, 'K-pop', '5492231234567', 4, 28, 'Ivi', '', '', 0)" class="btn btn-outline-primary btn-sm">
+                  <button
+                    onclick="abrirModalEdicion('Francesca y Juana', '2026-05-15', '16:30', '19:30', 'Esquiú', 6, 'K-pop', '5492231234567', 4, 28, 'Ivi', '', '', 0)"
+                    class="btn btn-outline-primary btn-sm">
                     ✏️ Editar
                   </button>
-                  <button onclick="mandarWhatsApp('5492231234567', 'Francesca y Juana', '15/05/2026', '16:30 a 19:30')" class="btn btn-success btn-sm text-white">
+                  <button onclick="mandarWhatsApp('5492231234567', 'Francesca y Juana', '15/05/2026', '16:30 a 19:30')"
+                    class="btn btn-success btn-sm text-white">
                     📲 Check-in
                   </button>
                 </div>
@@ -145,6 +150,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="Assets/js/main.js"></script>
+  <script src="assets/js/main.js"></script>
 </body>
+
 </html>
